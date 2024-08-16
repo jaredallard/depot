@@ -150,6 +150,9 @@ By default, the `Interval` field is a simple promote after X time field
 where Source's `Version` will be promoted (replace) to Target's
 `Version`.
 
+**Note**: If a Promotion object is not created, an environment must be
+manually promoted.
+
 ## Planned Infrastructure
 
 * PostgreSQL - For storing data listed above.
@@ -160,3 +163,78 @@ where Source's `Version` will be promoted (replace) to Target's
     right now.
 * Kubernetes - Container orchestration (Helm package provided).
   * A general-purpose Docker image will also be provided.
+
+## API
+
+depot will provide a gRPC API for consumers to use. The following
+RPCs will be implemented.
+
+### API: Applications
+
+* `GetApp(appID) Application`
+* `CreateApp(Application) Application`
+* `UpdateApp(appID, Application)`
+
+* `GetVersion(appID, targetID) Version`
+* `SetVersion(appID, environmentID, Version)`
+* `SetDeployedVersion(appID, targetID, Version)`
+* `Promote(appID, environment)`
+
+### API: Environments
+
+* `GetEnvironments() []Environments`
+* `GetEnvironment(environmentID) Environment`
+* `CreateEnvironment(Environment) Environment`
+* `UpdateEnvironment(Environment)`
+
+* `GetEnvironmentSets() []EnvironmentSets`
+* `GetEnvironmentSet(environmentSetID) EnvironmentSets`
+* `CreateEnvironmentSet([]Environments) EnvironmentSet`
+* `DeleteEnvironmentSet([]Environments)`
+
+### API: Targets
+
+* `CreateTarget(environmentID, Target) Target`
+* `DeleteTarget(environmentID, targetID)`
+
+## Integrations
+
+depot will contain a few first class integrations for syncing versions
+for relevant environments to their destinations.
+
+### ArgoCD
+
+Due to the nature of plugins being limited to rendering manifests and
+version tracking limited to _just_ Helm and Git, our integration pushes
+state into ArgoCD.
+
+A small component will be ran inside of same cluster where ArgoCD is
+being ran. This component will be ran with the following information:
+
+* Target ID
+
+From there, this component will periodically poll depot for updated
+versions of applications. Whenever an application is updated that is
+configured to deploy to said target, the component will update the
+related ArgoCD application. By default, it is equal to the name of the
+depot application.
+
+It is assumed that another process in your ArgoCD system will ensure
+that the ArgoCD applications are created (e.g., app of apps, or another
+system of discovering/distributing your ArgoCD manifests). This may
+entail ignoring changes to the `version` spec.
+
+### Flux
+
+Flux has a [notification controller]. This controller can update
+GitRepository revisions. depot will provide an integration for calling
+webhooks which will enable this integration.'
+
+If, for some reason, we're unable to provide a notification controller,
+we will need to provide an integration similar to the image repository
+reconcilation system. However, documentation on Flux's side is vague. If
+that is also not supported, we will instead have to build automation to
+hook into Flux's repo automations, which will have to push directly to
+the source Git repository (thanks GitOps).
+
+[notification controller]: https://fluxcd.io/flux/guides/webhook-receivers/
