@@ -149,3 +149,14 @@ type Promotion struct {
 By default, the `Interval` field is a simple promote after X time field
 where Source's `Version` will be promoted (replace) to Target's
 `Version`.
+
+## Planned Infrastructure
+
+* PostgreSQL - For storing data listed above.
+  * Promotion intervals will also be stored in Postgres. They will be
+    loaded in memory and executed by a single instance of the service.
+    Eventually, we can bring in other infrastructure/smarter systems to
+    handle failure modes but the scale of these crons doesn't warrant it
+    right now.
+* Kubernetes - Container orchestration (Helm package provided).
+  * A general-purpose Docker image will also be provided.
