@@ -25,6 +25,18 @@ environments and their subsequent versions.
 
 ## Design
 
+### Constraints
+
+* Be able to group environments in such a way that environments can
+  "include" them. This reduces environment duplication and
+  configuration.
+* Environments are a group of destinations where an application runs.
+  While we can have 1:1 Environment to "cluster" (or, Target), we should
+  assume most things have `n` targets. As such, top-level environments
+  should be where versions are updated.
+* Support promoting between environments on a set schedule. Eventually
+  we will want to support hooks/conditions for said promotions.
+
 ### Primitives
 
 Depot is built on the following basic primitives:
