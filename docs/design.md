@@ -59,7 +59,18 @@ common problems encountered when deploying things:
 * `Promotion` - Behaviour for promoting a version from one environment
   to another.
 
-![graph](https://g.gravizo.com/source/svg?https://raw.githubusercontent.com/jaredallard/depot/b1af77c174a3fff9aa5b9a412c5216db87890a89/docs/architecture.gv)
+```mermaid
+stateDiagram-v2
+  Application --> Environment
+  Application --> ApplicationTarget
+  Application --> EnvironmentSet
+  ApplicationTarget --> Version
+  ApplicationTarget --> Event
+
+  EnvironmentSet --> Environment
+  Promotion --> Environment
+  Environment --> Target
+```
 
 ### Applications
 
@@ -232,9 +243,9 @@ webhooks which will enable this integration.'
 
 If, for some reason, we're unable to provide a notification controller,
 we will need to provide an integration similar to the image repository
-reconcilation system. However, documentation on Flux's side is vague. If
+reconciliation system. However, documentation on Flux's side is vague. If
 that is also not supported, we will instead have to build automation to
-hook into Flux's repo automations, which will have to push directly to
+hook into Flux's repo automation, which will have to push directly to
 the source Git repository (thanks GitOps).
 
 [notification controller]: https://fluxcd.io/flux/guides/webhook-receivers/
