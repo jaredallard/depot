@@ -1,8 +1,11 @@
 digraph Depot {
-	Application -> Environment;
-	EnvironmentSet -> Environment;
-	Promotion -> Environment;
-	Environment -> Target;
-	Target -> Version;
-	VersionEvent -> Target;
+  Application -> Environment;
+  Application -> ApplicationTarget;
+  Application -> EnvironmentSet;
+  ApplicationTarget -> Version;
+  ApplicationTarget -> Event;
+  
+  EnvironmentSet -> Environment;
+  Promotion -> Environment;
+  Environment -> Target;
 }

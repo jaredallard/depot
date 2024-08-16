@@ -14,12 +14,13 @@ when you try to add a new environment, resulting in config file updates
 or bespoke automation to support a new addition.
 
 Depot aim to solve this problem by centralizing the storage of
-environments and their subsequent version.
+environments and their subsequent versions.
 
 ## Use-Cases
 
 * Standardizing version management across environments for
   microservices, ML models, and more.
+* Auditing deployment events across environments
 * No config new environment addition (e.g., add a new k8s cluster)
 
 ## Design
@@ -34,8 +35,8 @@ Depot is built on the following basic primitives:
   version
 * `Target`: A location under an environment (e.g., k8s cluster)
 * `Version`: A version of an application, set on an environment
-* `VersionEvent`: An event describing when a version was changed, useful
-  for tracking deployment events.
+* `Event`: An event describing when a version was changed and what
+  changed it. Useful for auditing or other tracking purposes.
 
 From there, a few other high-level constructs exist to reduce some
 common problems encountered when deploying things:
@@ -66,16 +67,21 @@ type Application struct {
   EnvironmentSets []EnvironmentSet
   Environments []Environment
 
-  // Versions and events are mapped to targets as they are the
-  // ultimate location where a version is used. Environments, on
-  // on the other hand, are merely a grouping of targets.
-  Versions map[TargetID]Version
-  Events map[TargetID]VersionEvent
+  // Targets is an application-specific mapping of Targets that are
+  // apart of this application. This is where the underlying version
+  // state is stored.
+  Targets map[string]ApplicationTarget
+}
+
+type ApplicationTarget struct {
+  Version Version
+  Events []Event
 }
 
 type Version struct {
   // Desired is the version that is currently desired to be deployed.
   Desired string
+
   // Deployed is the current version that has been deployed.
   Deployed string
 }
