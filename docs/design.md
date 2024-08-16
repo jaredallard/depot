@@ -27,7 +27,7 @@ environments and their subsequent versions.
 
 ### Constraints
 
-* Be able to group environments in such a way that environments can
+* Be able to group environments in such a way that applications can
   "include" them. This reduces environment duplication and
   configuration.
 * Environments are a group of destinations where an application runs.
