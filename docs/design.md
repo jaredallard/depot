@@ -47,7 +47,7 @@ common problems encountered when deploying things:
 * `Promotion` - Behaviour for promoting a version from one environment
   to another.
 
-![graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fjaredallard%2Fdepot%2Fjaredallard%2Fdocs%2Fdesign%2Fdocs%2Farchitecture.gv)
+![graph](https://g.gravizo.com/source/svg?https://raw.githubusercontent.com/jaredallard/depot/b1af77c174a3fff9aa5b9a412c5216db87890a89/docs/architecture.gv)
 
 ### Applications
 
